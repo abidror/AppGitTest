@@ -1,6 +1,8 @@
 package com.abiroid.appgittest;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -56,12 +58,26 @@ public class MainActivity extends ActionBarActivity {
 
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                items.remove(position);
-                itemsAdapter.notifyDataSetChanged();
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-                return false;
+                builder.setTitle("Delete Item ! ");
+                builder.setMessage("Are you sure to delete this item ?");
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        items.remove(position);
+                        itemsAdapter.notifyDataSetChanged();
+                    }
+                });
+
+                builder.setNegativeButton("No", null);
+                builder.show();
+
+                return true;
             }
         });
 
