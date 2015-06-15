@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -50,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
                 String newItem = edItem.getText().toString();
 
                 itemsAdapter.add(newItem);
-
+                writeItems();
                 edItem.setText("");
 
             }
@@ -71,6 +75,7 @@ public class MainActivity extends ActionBarActivity {
 
                         items.remove(position);
                         itemsAdapter.notifyDataSetChanged();
+                        writeItems();
                     }
                 });
 
@@ -81,8 +86,34 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        readItems();
     }
 
+    private void readItems() {
+        File filesDir = getFilesDir();
+        File todoFile = new File(filesDir, "todo.txt");
+
+        try {
+            items = new ArrayList<String>(FileUtils.readLines(todoFile));
+        } catch (IOException e) {
+            items = new ArrayList<>();
+        }
+    }
+
+    private void writeItems()
+    {
+        File filesDir = getFilesDir();
+        File todoFile = new File(filesDir, "todo.txt");
+
+        try
+        {
+            FileUtils.writeLines(todoFile, items);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
